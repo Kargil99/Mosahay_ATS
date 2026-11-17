@@ -1,0 +1,31 @@
+.poster-workspace{display:grid;grid-template-columns:minmax(300px,.92fr) minmax(360px,1.08fr);gap:14px;align-items:start}
+.poster-controls{padding:18px}
+.poster-preview-column{display:grid;gap:12px}
+.poster-preview-panel{padding:16px}
+.poster-preview-panel .panel-header{margin-bottom:12px}
+.poster-preview-panel h2{margin:4px 0 0;font-size:14px}
+.poster-export-actions{display:flex;gap:5px}
+.poster-canvas-wrap{display:grid;place-items:center;max-height:78vh;overflow:auto;padding:12px;background:#edf1f3;border:1px solid #e1e7e9;border-radius:10px}
+.poster-canvas{display:block;width:min(100%,510px);height:auto;background:#fff;box-shadow:0 9px 28px rgba(16,33,56,.18)}
+.poster-state-row{display:flex;align-items:center;justify-content:space-between;margin-top:9px;color:#86949a;font-size:9px;text-transform:capitalize}
+.poster-controls .field-block{margin-bottom:12px}
+.poster-controls .field-hint{display:block;margin-top:5px}
+.poster-controls .form-two{gap:9px;margin-bottom:12px}
+.poster-controls .form-two label,.poster-copy-fields>label{display:flex;flex-direction:column;gap:5px}
+.poster-copy-fields{display:grid;gap:9px}
+.poster-copy-fields label>span,.poster-social-grid label>span{font-size:9px;font-weight:700;color:#647780}
+.color-input{height:32px;padding:3px}
+.poster-copy-notice{margin-top:13px;font-size:9px}
+.poster-social-grid{display:grid;grid-template-columns:1fr;gap:8px}
+.poster-social-grid label{display:grid;gap:5px}
+.poster-history{margin-top:14px;padding:17px}
+.poster-history-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px}
+.poster-history-item{display:flex;align-items:center;gap:9px;text-align:left;border:1px solid #e7ecef;background:#fff;border-radius:9px;padding:9px}
+.poster-history-item.selected{border-color:#52a5a0;background:#f2faf8}
+.poster-history-item>span:nth-child(2){display:grid;min-width:0;gap:3px;flex:1}
+.poster-history-item strong{font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.poster-history-item small{font-size:8px;color:#839197}
+.poster-history-item em{font-size:8px;color:#71817f;font-style:normal}
+.poster-history-icon{width:31px;height:31px;border-radius:8px;background:#edf5f2;color:#39877d;display:grid;place-items:center}
+@media(max-width:1000px){.poster-workspace{grid-template-columns:1fr}.poster-preview-column{grid-row:1}.poster-canvas{width:min(100%,460px)}}
+@media(max-width:600px){.poster-controls .form-two{grid-template-columns:1fr 1fr}.poster-preview-panel .panel-header{align-items:flex-start}.poster-canvas-wrap{padding:6px}.poster-history-list{grid-template-columns:1fr}}

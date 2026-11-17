@@ -1,0 +1,19 @@
+services:
+  mongodb:
+    image: mongo:8.0
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: recruitos
+      MONGO_INITDB_ROOT_PASSWORD: change-this-local-only
+    ports:
+      - "27017:27017"
+    volumes:
+      - recruitos_mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  recruitos_mongo_data:

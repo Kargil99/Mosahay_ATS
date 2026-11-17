@@ -1,0 +1,7 @@
+-- Opt-in synthetic seed only. Never applies automatically and contains no real candidate data.
+-- Replace the value below with a test workspace UUID created through the app.
+-- Run only against a disposable local/test Supabase project.
+-- select set_config('app.seed_org_id', '00000000-0000-4000-8000-000000000001', false);
+-- insert into public.clients(org_id,name,website,notes)
+-- values (current_setting('app.seed_org_id')::uuid,'Example Client (Synthetic)','https://example.test','Synthetic demo record');
+-- Add candidate fixtures only through the upload/parser flow with synthetic CV files.

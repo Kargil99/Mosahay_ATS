@@ -1,0 +1,46 @@
+services:
+  - type: web
+    name: mosahay-recruitos-api
+    runtime: docker
+    dockerfilePath: ./apps/api/Dockerfile
+    dockerContext: .
+    healthCheckPath: /health
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: MONGODB_URI
+        sync: false
+      - key: MONGODB_DATABASE
+        value: mosahay_recruitos
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_ISSUER
+        value: mosahay-recruitos
+      - key: APP_WEB_URL
+        sync: false
+      - key: API_PUBLIC_URL
+        sync: false
+      - key: AUTH_COOKIE_DOMAIN
+        sync: false
+      - key: ALLOW_PUBLIC_SIGNUP
+        value: "true"
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: GOOGLE_REDIRECT_URI
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: OPENAI_MODEL
+        value: gpt-5.5
+      - key: OPENAI_IMAGE_MODEL
+        value: gpt-image-2.5-flare
+      - key: AI_SCORING_ENABLED
+        value: "false"
+      - key: ALLOWED_ORIGINS
+        sync: false
+      - key: PUBLIC_CAREERS_ORG_ID
+        sync: false
+      - key: PUBLIC_EMPLOYER_LEADS_ORG_ID
+        sync: false
