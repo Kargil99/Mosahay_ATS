@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { ArrowLeft, ArrowRight, BriefcaseBusiness, Building2, CheckCircle2, Clock3, MapPin, Search, ShieldCheck, UploadCloud } from "lucide-react";
+import { apiBase } from "@/lib/api";
 
 type PublicJob = {
   id: string; slug: string; title: string; description: string; location?: string | null;
@@ -13,12 +14,10 @@ type PublicJob = {
   privacy_notice_text?: string; privacy_notice_version?: string;
 };
 
-const apiBase = (process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000/api/v1").replace(/\/$/, "");
-
 async function publicApi<T>(path: string, init?: RequestInit): Promise<T> {
   const headers = new Headers(init?.headers);
   if (typeof init?.body === "string") headers.set("Content-Type", "application/json");
-  const response = await fetch(`${apiBase}${path}`, { ...init, headers, cache: "no-store" });
+  const response = await fetch(`${apiBase()}${path}`, { ...init, headers, cache: "no-store" });
   if (!response.ok) {
     let message = "We could not complete that request. Please try again.";
     try { const data = await response.json(); message = data?.detail?.error?.message || data?.message || message; } catch { /* Use a safe generic error. */ }

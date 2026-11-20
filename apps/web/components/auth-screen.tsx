@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { ArrowRight, BriefcaseBusiness, Eye, EyeOff, ShieldCheck } from "lucide-react";
+import { apiBase } from "@/lib/api";
 
 export const DEMO_EMAIL = "demo@mosahay.com";
 export const DEMO_PASSWORD = "RecruitOSDemo2026!";
@@ -57,14 +58,6 @@ export function DemoAccessScreen({ onLogin, onBack }: { onLogin: (account: DemoA
   </main>;
 }
 
-const apiBase = () => {
-  const configured = process.env.NEXT_PUBLIC_API_BASE_URL;
-  if (configured) return configured.replace(/\/$/, "");
-  const host = typeof window === "undefined" ? "localhost" : window.location.hostname;
-  const protocol = typeof window === "undefined" ? "http:" : window.location.protocol;
-  return `${protocol}//${host}:8000/api/v1`;
-};
-
 export function AuthScreen({ onLogin, onOpenDemo, inviteToken = "" }: { onLogin: (account: DemoAccount) => void; onOpenDemo?: () => void; inviteToken?: string }) {
   const [mode, setMode] = useState<"signin" | "signup">(inviteToken ? "signup" : "signin");
   const [showPassword, setShowPassword] = useState(false);
@@ -82,7 +75,7 @@ export function AuthScreen({ onLogin, onOpenDemo, inviteToken = "" }: { onLogin:
       setGoogleEnabled(Boolean(config.google_enabled)); setMongoEnabled(Boolean(config.mongodb_enabled)); setPublicSignupEnabled(config.signup_enabled !== false);
       if (config.signup_enabled === false && !inviteToken) setMode("signin");
     }).catch(() => undefined);
-  }, []);
+  }, [inviteToken]);
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();

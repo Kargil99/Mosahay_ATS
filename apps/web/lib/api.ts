@@ -9,7 +9,9 @@ export class ApiError extends Error {
 }
 
 export function apiBase() {
-  if (process.env.NEXT_PUBLIC_API_BASE_URL) return process.env.NEXT_PUBLIC_API_BASE_URL.replace(/\/$/, "");
+  const configured = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, "");
+  if (process.env.NODE_ENV === "production") return configured?.startsWith("/") ? configured : "/api/v1";
+  if (configured) return configured;
   const host = typeof window === "undefined" ? "localhost" : window.location.hostname;
   const protocol = typeof window === "undefined" ? "http:" : window.location.protocol;
   return `${protocol}//${host}:8000/api/v1`;

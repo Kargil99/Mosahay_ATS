@@ -5,17 +5,10 @@ import type { Session } from "@supabase/supabase-js";
 import { AuthScreen, DemoAccessScreen } from "@/components/auth-screen";
 import { AtsApp } from "@/components/ats-app";
 import { LoaderCircle } from "lucide-react";
+import { apiBase } from "@/lib/api";
 
 const DEMO_SESSION_KEY = "mosahay_demo_session";
 const DEMO_SIGNED_OUT_KEY = "mosahay_demo_signed_out";
-const apiRoot = () => {
-  const configured = process.env.NEXT_PUBLIC_API_BASE_URL;
-  if (configured) return configured.replace(/\/$/, "");
-  const host = typeof window === "undefined" ? "localhost" : window.location.hostname;
-  const protocol = typeof window === "undefined" ? "http:" : window.location.protocol;
-  return `${protocol}//${host}:8000/api/v1`;
-};
-
 function sessionFor(account: { id: string; email: string; name?: string; providers?: string[] }, kind: "demo" | "mongodb"): Session {
   const token = kind === "demo" ? `demo:${account.id}` : "mongo-cookie";
   return {
@@ -51,15 +44,15 @@ export default function HomePage() {
       const authComplete = query.get("auth") === "complete";
       if (active) setInviteToken(invite);
       try {
-        const configResponse = await fetch(`${apiRoot()}/auth/config`, { cache: "no-store", credentials: "include" });
+        const configResponse = await fetch(`${apiBase()}/auth/config`, { cache: "no-store", credentials: "include" });
         const config = configResponse.ok ? await configResponse.json() : {};
         if (active) setMongoEnabled(Boolean(config.mongodb_enabled));
         if (config.mongodb_enabled) {
-          const response = await fetch(`${apiRoot()}/auth/session`, { cache: "no-store", credentials: "include" });
+          const response = await fetch(`${apiBase()}/auth/session`, { cache: "no-store", credentials: "include" });
           const { user } = response.ok ? await response.json() : { user: null };
           if (user && active) {
             if (invite) {
-              await fetch(`${apiRoot()}/organizations/invitations/accept`, { method: "POST", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ token: invite }) });
+              await fetch(`${apiBase()}/organizations/invitations/accept`, { method: "POST", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ token: invite }) });
             }
             setSession(sessionFor(user, "mongodb"));
           }
@@ -87,7 +80,7 @@ export default function HomePage() {
   if (!session) return <AuthScreen inviteToken={inviteToken} onLogin={account => setSession(sessionFor(account, "mongodb"))} onOpenDemo={process.env.NODE_ENV !== "production" ? () => setShowDemoAuth(true) : undefined} />;
   return <AtsApp session={session} onSignOut={async () => {
     if (session.access_token === "mongo-cookie") {
-      await fetch(`${apiRoot()}/auth/logout`, { method: "POST", credentials: "include" });
+      await fetch(`${apiBase()}/auth/logout`, { method: "POST", credentials: "include" });
       setShowDemoAuth(false);
     } else {
       localStorage.removeItem(DEMO_SESSION_KEY); localStorage.setItem(DEMO_SIGNED_OUT_KEY, "1");

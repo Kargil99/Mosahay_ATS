@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
-const configuredApiOrigin = process.env.API_PROXY_ORIGIN?.trim();
+const configuredApiOrigin = process.env.API_PROXY_ORIGIN?.trim()
+  || (process.env.NODE_ENV === "production" ? "https://mosahay-ats.vercel.app" : "");
 const apiOrigin = configuredApiOrigin
   ? (configuredApiOrigin.startsWith("http") ? configuredApiOrigin : `https://${configuredApiOrigin}`).replace(/\/+$/, "")
   : "";

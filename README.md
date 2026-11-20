@@ -170,6 +170,38 @@ For a $0 pilot, an Atlas Free cluster can hold the app database. Create a databa
 
 Atlas Free clusters have a 512 MB storage limit and do not support managed backups. Use a manual `mongodump`/`mongorestore` backup if you pilot with disposable data. For real candidate records, use a paid tier with backups and a tested restore process. [Atlas Free cluster limits](https://www.mongodb.com/docs/atlas/reference/free-shared-limitations/) · [Atlas backup comparison](https://www.mongodb.com/docs/atlas/manage-clusters/).
 
+### Existing Vercel frontend and FastAPI projects
+
+When the Next.js frontend and FastAPI API are separate Vercel projects, use the frontend's origin for browser requests and proxy `/api/v1/*` to the API project. The production Next.js config defaults to the RecruitOS API host below; `API_PROXY_ORIGIN` can override it. Do not point the browser directly at the API host, which can make authentication cookies behave as third-party cookies.
+
+For the currently shared deployment, the FastAPI API host is `https://mosahay-ats.vercel.app` and the frontend host is `https://web-coral-one-36.vercel.app`. The API root can return 404; check `https://mosahay-ats.vercel.app/health` instead.
+
+Set these variables in the **frontend Vercel project**:
+
+```text
+NEXT_PUBLIC_API_BASE_URL=/api/v1
+API_PROXY_ORIGIN=https://mosahay-ats.vercel.app
+NEXT_PUBLIC_APP_URL=https://web-coral-one-36.vercel.app
+```
+
+Set these variables in the **FastAPI Vercel project**:
+
+```text
+APP_ENV=production
+MONGODB_URI=<Atlas connection string>
+MONGODB_DATABASE=mosahay_recruitos
+JWT_SECRET=<random secret with at least 32 characters>
+JWT_ISSUER=mosahay-recruitos
+APP_WEB_URL=https://web-coral-one-36.vercel.app
+API_PUBLIC_URL=https://web-coral-one-36.vercel.app
+AUTH_COOKIE_DOMAIN=
+ALLOWED_ORIGINS=https://web-coral-one-36.vercel.app
+ALLOW_PUBLIC_SIGNUP=true
+GOOGLE_REDIRECT_URI=https://web-coral-one-36.vercel.app/api/v1/auth/google/callback
+```
+
+Store `MONGODB_URI`, `JWT_SECRET`, `GOOGLE_CLIENT_SECRET`, and all API keys as encrypted Vercel environment variables; never put them in `NEXT_PUBLIC_*` values or Git. Add `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` after creating the OAuth web client. In Google Auth Platform, add the frontend origin as an authorized JavaScript origin and add the exact callback above as an authorized redirect URI. Also add `http://localhost:3000` and `http://localhost:8000/api/v1/auth/google/callback` for local development if needed. Redeploy both Vercel projects after environment changes. Verify the API `/health` reports `"database":"mongodb"` and `/api/v1/auth/config` reports MongoDB enabled before creating the first owner. After the owner creates the workspace, set `ALLOW_PUBLIC_SIGNUP=false` and redeploy.
+
 ### Free pilot deployment on Render
 
 The repository includes an API Blueprint in `render.yaml`. The Next.js app can run as a second Render web service. The optional `API_PROXY_ORIGIN` rewrite sends `/api/v1/*` through the frontend origin, so the browser sees one host for the app, session cookie, uploads, and Google callback. Keep `AUTH_COOKIE_DOMAIN` empty for this setup.
