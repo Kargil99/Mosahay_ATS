@@ -57,11 +57,11 @@ export default function HomePage() {
             setSession(sessionFor(user, "mongodb"));
           }
           if ((invite || authComplete) && active) window.history.replaceState({}, "", window.location.pathname);
-        } else if (process.env.NODE_ENV !== "production") {
+        } else {
           try {
             const saved = localStorage.getItem(DEMO_SESSION_KEY);
             if (saved) setSession(sessionFor(JSON.parse(saved), "demo"));
-          } catch { /* The demo sign-in can open a clean browser-local session. */ }
+          } catch { /* A local demo session is optional and can be started from the welcome screen. */ }
         }
       } catch { /* If the API is not configured, development can still use the local demo. */ }
       if (active) setReady(true);
@@ -76,8 +76,8 @@ export default function HomePage() {
     localStorage.setItem(DEMO_SESSION_KEY, JSON.stringify(account));
     setSession(sessionFor(account, "demo"));
   };
-  if (!session && process.env.NODE_ENV !== "production" && (!mongoEnabled || showDemoAuth)) return <DemoAccessScreen onLogin={saveDemoAccount} onBack={mongoEnabled ? () => setShowDemoAuth(false) : undefined} />;
-  if (!session) return <AuthScreen inviteToken={inviteToken} onLogin={account => setSession(sessionFor(account, "mongodb"))} onOpenDemo={process.env.NODE_ENV !== "production" ? () => setShowDemoAuth(true) : undefined} />;
+  if (!session && (showDemoAuth || (process.env.NODE_ENV !== "production" && !mongoEnabled))) return <DemoAccessScreen onLogin={saveDemoAccount} onBack={mongoEnabled || process.env.NODE_ENV === "production" ? () => setShowDemoAuth(false) : undefined} />;
+  if (!session) return <AuthScreen inviteToken={inviteToken} onLogin={account => setSession(sessionFor(account, "mongodb"))} onOpenDemo={!mongoEnabled ? () => setShowDemoAuth(true) : undefined} />;
   return <AtsApp session={session} onSignOut={async () => {
     if (session.access_token === "mongo-cookie") {
       await fetch(`${apiBase()}/auth/logout`, { method: "POST", credentials: "include" });

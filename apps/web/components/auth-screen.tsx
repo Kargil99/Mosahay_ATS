@@ -111,7 +111,8 @@ export function AuthScreen({ onLogin, onOpenDemo, inviteToken = "" }: { onLogin:
       <div className="auth-panel-inner">
         <div className="auth-mobile-brand brand"><span className="brand-mark"><BriefcaseBusiness size={18} /></span><span>MoSahay <b>RecruitOS</b></span></div>
         <div className="auth-heading"><div className="eyebrow">WELCOME TO MOSAHAY RECRUITOS</div><h2>{mode === "signin" ? "Welcome back" : "Create your team account"}</h2><p>{mode === "signin" ? "Sign in to your recruitment workspace." : "Use your work email to join your team or start a workspace."}</p></div>
-        {!mongoEnabled && <div className="notice notice-warning"><b>Connect your workspace database</b><span>MongoDB must be configured on the API service before team accounts can be created. Local development can use the sample demo sign-in.</span></div>}
+        {!mongoEnabled && <div className="notice notice-warning"><b>Team sign-in is being connected</b><span>MongoDB setup is still in progress. You can explore the product with sample data in demo mode below.</span></div>}
+        {onOpenDemo && <div className="demo-launch-card"><div className="demo-launch-copy"><div className="eyebrow">DEMO MODE AVAILABLE</div><strong>Explore the product now</strong><span>Open a sample workspace in this browser while the API is being configured.</span></div><button className="button button-secondary button-full demo-launch-button" type="button" onClick={onOpenDemo}>Open demo workspace<ArrowRight size={16} /></button></div>}
         {inviteToken && <div className="notice notice-info"><b>You have a team invitation</b><span>Create an account with the invited email address to join your team workspace.</span></div>}
         <button className="button button-secondary button-full google-auth-button" type="button" onClick={continueWithGoogle} disabled={!mongoEnabled || !googleEnabled} title={!googleEnabled ? "Configure Google OAuth on the API service to enable this option." : undefined}><span className="google-mark">G</span>{googleEnabled ? "Continue with Google" : "Continue with Google · setup required"}</button>
         <div className="auth-link-note">{googleEnabled ? "A verified Google email can link to an account you already have." : "Google sign-in and account linking will work after GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET are configured on the API service."}</div>
@@ -126,7 +127,6 @@ export function AuthScreen({ onLogin, onOpenDemo, inviteToken = "" }: { onLogin:
           <button className="button button-primary button-full" type="submit" disabled={!mongoEnabled || busy}>{busy ? "Please wait…" : mode === "signin" ? "Sign in" : "Create account"}<ArrowRight size={16} /></button>
         </form>
         {(publicSignupEnabled || inviteToken || mode === "signup") && <div className="auth-switch">{mode === "signin" ? "New to your team?" : "Already have an account?"}<button className="text-button" type="button" onClick={() => { setMode(mode === "signin" ? "signup" : "signin"); setMessage(""); }}>{mode === "signin" ? "Create an account" : "Sign in"}</button></div>}
-        {onOpenDemo && <div className="demo-preview-link"><button className="text-button" type="button" onClick={onOpenDemo}>Explore the sample browser demo</button><span>Local-only sample records; changes don’t sync with your team.</span></div>}
         <p className="auth-legal">RecruitOS keeps your team’s hiring work in a private workspace. Candidate fit scores are review aids; hiring decisions remain human-led.</p>
       </div>
     </section>
